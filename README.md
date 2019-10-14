@@ -3,5 +3,5 @@
 ## Install
 
 ```shell script
-pip install git+https://github.com/silverbulletmdc/labelme@ysj
+pip install git+https://github.com/silverbulletmdc/mdc_tools
 ```
