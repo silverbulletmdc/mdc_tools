@@ -111,12 +111,12 @@ def render_mask_to_img(img, cls_map, num_classes):
     return img
 
 
-def render_keypoints_to_img(image, points, kp_vis=None, diameter=5):
+def render_keypoints_to_img(image, points, kp_vis=None, diameter=5, color=(0,255,0)):
     if kp_vis is not None:
         points = [point for vis, point in zip(kp_vis, points) if vis]
     im = image.copy()
 
     for (x, y) in points:
-        cv2.circle(im, (int(x), int(y)), diameter, (0, 255, 0), -1)
+        cv2.circle(im, (int(x), int(y)), diameter, color, -1)
 
     return im
