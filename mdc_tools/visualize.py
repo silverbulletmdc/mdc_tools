@@ -18,17 +18,17 @@ COLOR_LIST = [
 
 # helper function for data visualization
 def visualize_img(*no_title_images, rows=1, **images):
-    """PLot images in one row."""
+    """Plot images in one row."""
     n = len(images) + len(no_title_images)
     plt.figure(figsize=(16, 5 * rows))
     for i, image in enumerate(no_title_images):
-        plt.subplot(rows, n // rows, i + 1)
+        plt.subplot(rows, n // rows + 1, i + 1)
         plt.xticks([])
         plt.yticks([])
         plt.imshow(image)
 
     for i, (name, image) in enumerate(images.items()):
-        plt.subplot(rows, n // rows, len(no_title_images) + i + 1)
+        plt.subplot(rows, n // rows + 1, len(no_title_images) + i + 1)
         plt.xticks([])
         plt.yticks([])
         plt.title(' '.join(name.split('_')).title())
