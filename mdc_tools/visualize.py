@@ -37,7 +37,7 @@ def visualize_img(*no_title_images, rows=1, **images):
     plt.show()
 
 
-def get_heatmap(weights, featuremap, image):
+def get_heatmap(weights, featuremap, image, alpha=0.3):
     """
     绘制heatmap
     :param np.ndarray weights: 不同层的权重 C
@@ -50,10 +50,10 @@ def get_heatmap(weights, featuremap, image):
 
     heatmap = (heatmap - np.min(heatmap)) / (np.max(heatmap) - np.min(heatmap)) * 255
     heatmap = cv2.resize(heatmap, (image.shape[1], image.shape[0]))
-    heatmap = 255 - heatmap
     heatmap = heatmap.astype(np.uint8)
     heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
-    return (heatmap * 0.2 + image * 0.7).astype(np.uint8)
+    heatmap = cv2.cvtColor(heatmap, cv2.COLORBRG2RGB)
+    return (heatmap * alpha + image * ( 1 - alpha )).astype(np.uint8)
 
 
 def visualize_reid(query, galleries, query_pid, gallery_pids):
