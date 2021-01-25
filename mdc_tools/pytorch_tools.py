@@ -5,6 +5,7 @@
 """
 from bisect import bisect_right
 import torch
+import libtmux
 
 
 # FIXME ideally this would be achieved with a CombinedLRScheduler,
@@ -55,3 +56,17 @@ class WarmupMultiStepLR(torch.optim.lr_scheduler._LRScheduler):
             * self.gamma ** bisect_right(self.milestones, self.last_epoch)
             for base_lr in self.base_lrs
         ]
+
+
+def grid_search(command_dict, tmux_name='search'):
+    server = libtmux.Server()
+    sess = server.new_session(tmux_name)
+
+    for i, (name, command_) in enumerate(command_dict.items()):
+        if i == 0:
+            window = sess.windows[-1]
+        else:
+            window = sess.new_window()
+        window.rename_window(name)
+        pane = window.panes[0]
+        pane.send_keys(command_)

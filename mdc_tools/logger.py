@@ -3,7 +3,7 @@ import sys
 import os
 
 
-def setup_logger(name, save_dir, distributed_rank, level="INFO"):
+def setup_logger(name, save_dir, distributed_rank=True, level="INFO"):
     logger = logging.getLogger(name)
     logger.setLevel(10)
     # don't log results for the non-master process
