@@ -1,3 +1,4 @@
 torch
 albumentations
 libtmux
+opencv-python

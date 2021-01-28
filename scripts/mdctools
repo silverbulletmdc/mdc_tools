@@ -24,3 +24,7 @@ def video2frame(input_path, output_path):
         else:
             break
     print(f'Save to {output_path}')
+
+
+if __name__ == '__main__':
+    main()
