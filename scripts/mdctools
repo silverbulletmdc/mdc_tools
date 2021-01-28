@@ -21,6 +21,7 @@ def video2frame(input_path, output_path):
         ret, frame = cap.read()
         if ret:
             cv2.imwrite(f'{output_path}/{i}.png', frame)
+            i = i + 1
         else:
             break
     print(f'Save to {output_path}')
