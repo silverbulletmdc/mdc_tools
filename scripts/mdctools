@@ -18,7 +18,7 @@ def video2frame(input_path, output_path):
     os.makedirs(output_path, exist_ok=True)
 
     for i, frame in enumerate(mpy.VideoFileClip(input_path).iter_frames()):
-        cv2.imwrite(f'{output_path}/{i:03d}.png', frame[..., ::-1])
+        cv2.imwrite(f'{output_path}/{i:05d}.png', frame[..., ::-1])
 
     print(f'Save to {output_path}')
 
