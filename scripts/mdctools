@@ -1,6 +1,7 @@
 #! /usr/bin/env/python
 import cv2
 import os
+import moviepy.editor as mpy 
 import click
 
 @click.group()
@@ -15,15 +16,10 @@ def video2frame(input_path, output_path):
     if output_path == '':
         output_path = os.path.splitext(input_path)[0]
     os.makedirs(output_path, exist_ok=True)
-    cap = cv2.VideoCapture(input_path)
-    i = 0
-    while True:
-        ret, frame = cap.read()
-        if ret:
-            cv2.imwrite(f'{output_path}/{i}.png', frame)
-            i = i + 1
-        else:
-            break
+
+    for i, frame in enumerate(mpy.VideoFileClip(input_path).iter_frames()):
+        cv2.imwrite(f'{output_path}/{i:03d}.png', frame[..., ::-1])
+
     print(f'Save to {output_path}')
 
 
