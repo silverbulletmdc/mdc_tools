@@ -1,7 +1,5 @@
 #! /usr/bin/env/python
-import cv2
 import os
-import moviepy.editor as mpy 
 import click
 
 @click.group()
@@ -13,6 +11,8 @@ def main():
 @click.option('-i', '--input-path')
 @click.option('-o', '--output-path', default='')
 def video2frame(input_path, output_path):
+    import cv2
+    import moviepy.editor as mpy 
     if output_path == '':
         output_path = os.path.splitext(input_path)[0]
     os.makedirs(output_path, exist_ok=True)
@@ -22,6 +22,15 @@ def video2frame(input_path, output_path):
 
     print(f'Save to {output_path}')
 
+
+@main.command()
+@click.option('-i', '--input-path')
+@click.option('-o', '--output-path', default='')
+def video2audio(input_path, output_path):
+    import moviepy.editor as mpy 
+    if output_path == '':
+        output_path = os.path.splitext(input_path)[0] + '.mp3'
+    mpy.VideoFileClip(input_path).audio.write_audiofile(output_path)
 
 if __name__ == '__main__':
     main()
