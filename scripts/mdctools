@@ -32,5 +32,20 @@ def video2audio(input_path, output_path):
         output_path = os.path.splitext(input_path)[0] + '.mp3'
     mpy.VideoFileClip(input_path).audio.write_audiofile(output_path)
 
+
+@main.command()
+@click.argument('input-path')
+def detect_reid_pkl(input_path):
+    import pandas as pd
+    from pprint import pprint
+    pkl = pd.read_pickle(input_path)
+    sum = 0
+    for key, value in pkl.items():
+        sum += len(value)
+        print(key, len(value))
+        if len(value) > 0:
+            pprint(value[0])
+    print("Total: ", sum)
+
 if __name__ == '__main__':
     main()
