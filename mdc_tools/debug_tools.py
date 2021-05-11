@@ -1,5 +1,6 @@
 import torch
 import cv2
+import sys
 def tensor2img(img, range=(0, 1), output='a.jpg'):
     """将任意tensor或ndarray存储为图片，方便调试使用
 
@@ -19,5 +20,6 @@ def tensor2img(img, range=(0, 1), output='a.jpg'):
     cv2.imwrite(output, img)
 
 if __name__ == "__main__":
+    print(sys.argv)
     a = torch.randn(3, 4, 4)
     tensor2img(a) 

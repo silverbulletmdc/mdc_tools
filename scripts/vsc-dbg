@@ -1,0 +1,21 @@
+#! /usr/bin/env python
+"""生成vscode的调试配置。执行后将对应配置复制到launch.json中即可。
+"""
+import sys
+import os
+import json
+from pprint import pprint
+if __name__ == "__main__":
+    cwd = os.getcwd() 
+    file_ = sys.argv[2]
+    args = sys.argv[3:]
+    config = {
+            "name": f"Python: {file_}",
+            "type": "python",
+            "request": "launch",
+            "program": f"{file_}",
+            "console": "integratedTerminal",
+            "args": args,
+            "cwd": cwd
+        }
+    print(json.dumps(config))
