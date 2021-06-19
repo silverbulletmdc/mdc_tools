@@ -3,7 +3,7 @@ import glob
 
 setup(
     name="mdc_tools",
-    version="1.3.5",
+    version="1.3.7",
     author="Dechao Meng",
     author_email="dechao.meng@vipl.ict.ac.cn",
     url="https://github.com/silverbulletmdc/mdc_tools",
