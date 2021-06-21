@@ -22,6 +22,17 @@ def video2frame(input_path, output_path):
 
     print(f'Save to {output_path}')
 
+@main.command()
+@click.option('-i', '--input-path')
+@click.option('-o', '--output-path', default='')
+def frame2video(input_path, output_path):
+    import moviepy.editor as mpy 
+    if output_path == '':
+        output_path = input_path + '.mp4'
+    
+    input_frames = [os.path.join(input_path, fname) for fname in sorted(os.listdir(input_path))]
+    mpy.ImageSequenceClip(input_frames, fps=24).write_videofile(output_path)
+    print(f'Save to {output_path}')
 
 @main.command()
 @click.option('-i', '--input-path')
