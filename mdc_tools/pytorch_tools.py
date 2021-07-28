@@ -5,7 +5,9 @@
 """
 from bisect import bisect_right
 import torch
-import libtmux
+import torch
+import cv2
+import sys
 
 
 # FIXME ideally this would be achieved with a CombinedLRScheduler,
@@ -58,15 +60,23 @@ class WarmupMultiStepLR(torch.optim.lr_scheduler._LRScheduler):
         ]
 
 
-def grid_search(command_dict, tmux_name='search'):
-    server = libtmux.Server()
-    sess = server.new_session(tmux_name)
 
-    for i, (name, command_) in enumerate(command_dict.items()):
-        if i == 0:
-            window = sess.windows[-1]
-        else:
-            window = sess.new_window()
-        window.rename_window(name)
-        pane = window.panes[0]
-        pane.send_keys(command_)
+
+def tensor2img(img, range=(0, 1), output='a.jpg'):
+    """将任意tensor或ndarray存储为图片，方便调试使用
+
+    Args:
+        img (torch.Tensor): 任意形状或数据类型的tensor
+    """
+    if isinstance(img, torch.Tensor):
+        img = torch.clamp((img + range[0]) /
+                          (range[1] - range[0]) * 255, 0, 255)
+        if len(img.shape) == 4:
+            img = torch.cat(*img, dim=0)
+
+        if img.shape[0] == 3:
+            img = img.permute([1, 2, 0])
+
+        img = img.detach().cpu().numpy()
+
+    cv2.imwrite(output, img)

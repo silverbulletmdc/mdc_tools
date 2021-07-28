@@ -7,8 +7,22 @@ import jstyleson as json
 from pprint import pprint
 if __name__ == "__main__":
     cwd = os.getcwd()
-    file_ = sys.argv[2]
-    args = sys.argv[3:]
+    if "python" in sys.argv:
+        python_idx = sys.argv.index("python")
+    elif "python3" in sys.argv:
+        python_idx = sys.argv.index("python3")
+    else: 
+        print("Can't find python or python3 in your command")
+        
+
+    envs = sys.argv[1:python_idx]
+    env_dict = {}
+    for env in envs:
+        key, value = env.split("=")
+        env_dict[key] = value
+
+    file_ = sys.argv[python_idx + 1]
+    args = sys.argv[python_idx + 2:]
     if os.path.exists('.vscode/launch.json'):
         launch = json.load(open('.vscode/launch.json'))
     else:
@@ -22,6 +36,7 @@ if __name__ == "__main__":
         "type": "python",
         "request": "launch",
         "program": f"{file_}",
+        "env": env_dict,
         "console": "integratedTerminal",
         "args": args,
         "cwd": cwd
