@@ -9,8 +9,8 @@ import os
 
 
 @click.command()
-@click.argument('receiver')
 @click.argument('title')
+@click.option('-r', '--receiver', default="")
 @click.option('-c', '--content', default="")
 def main(receiver, title, content):
     # 第三方 SMTP 服务
@@ -19,7 +19,13 @@ def main(receiver, title, content):
     mail_host = cfg["mail_host"] 
     mail_user = cfg["mail_user"] 
     mail_pass = cfg["mail_pass"] 
+
     sender = cfg["sender"]
+
+    # 如果收件人为空则发给自己
+    if receiver == "":
+        receiver = sender
+
     from_ = cfg["from"]
 
     receivers = [receiver]  # 接收邮件，可设置为你的QQ邮箱或者其他邮箱
