@@ -1,0 +1,42 @@
+#! /usr/bin/env python
+# -*- coding: UTF-8 -*-
+import smtplib
+from email.mime.text import MIMEText
+from email.header import Header
+import yaml
+import click
+import os
+
+
+@click.command()
+@click.argument('receiver')
+@click.argument('title')
+@click.option('-c', '--content', default="")
+def main(receiver, title, content):
+    # 第三方 SMTP 服务
+    with open(os.path.expanduser('~/.smail'), 'r') as f:
+        cfg = yaml.load(f)
+    mail_host = cfg["mail_host"] 
+    mail_user = cfg["mail_user"] 
+    mail_pass = cfg["mail_pass"] 
+    sender = cfg["sender"]
+    from_ = cfg["from"]
+
+    receivers = [receiver]  # 接收邮件，可设置为你的QQ邮箱或者其他邮箱
+
+    message = MIMEText(content, 'plain', 'utf-8')
+    message['From'] = Header(from_, 'utf-8')
+    message['To'] =  Header("测试", 'utf-8')
+
+    subject = title
+    message['Subject'] = Header(subject, 'utf-8')
+
+
+    smtpObj = smtplib.SMTP()
+    smtpObj.connect(mail_host, 25)    # 25 为 SMTP 端口号
+    smtpObj.login(mail_user,mail_pass)
+    smtpObj.sendmail(sender, receivers, message.as_string())
+
+
+if __name__ == '__main__':
+    main()
