@@ -1,0 +1,35 @@
+#! /usr/bin/env python
+"""
+所有单GPU的应用，使用多进程运行。
+应用必须支持--start-idx和--end-idx参数
+"""
+import click
+import torch.multiprocessing as mp
+import subprocess
+import math
+
+
+@click.command()
+@click.option('--gpus', default='0,1,2,3')
+@click.option('--start-idx', default=0)
+@click.option('--end-idx', default=100)
+@click.option('--command', default='')
+def main(gpus, start_idx, end_idx, command):
+    gpus = [int(gpu) for gpu in gpus.split(',')]
+    step = math.ceil((end_idx - start_idx) / len(gpus))
+    start = start_idx
+    procs = []
+    for idx, gpu in enumerate(gpus):
+        end = min(start + step, end_idx)
+        command = f"CUDA_VISIBLE_DEVICES={gpu} {command} --start-idx {start} --end-idx {end}"
+        proc = subprocess.Popen(command, shell=True)
+        procs.append(proc)
+        start = end
+    for proc in procs:
+        proc: subprocess.Popen
+        code = proc.wait()
+    return code
+
+
+if __name__ == '__main__':
+    main()

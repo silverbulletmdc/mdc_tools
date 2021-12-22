@@ -16,6 +16,7 @@ import torch.multiprocessing as mp
 
 
 
+global _LOCAL_PROCESS_GROUP
 _LOCAL_PROCESS_GROUP = None
 """
 A torch process group which only includes processes that on the same machine as the current process.
@@ -273,7 +274,7 @@ def _find_free_port():
     return port
 
 
-def launch(main_func, num_gpus_per_machine, num_machines=1, machine_rank=0, dist_url=None, args=()):
+def launch(main_func, num_gpus_per_machine, num_machines=1, machine_rank=0, dist_url='auto', args=()):
     """
     Launch multi-gpu or distributed training.
     This function must be called on all machines involved in the training.
@@ -298,7 +299,7 @@ def launch(main_func, num_gpus_per_machine, num_machines=1, machine_rank=0, dist
             port = _find_free_port()
             dist_url = f"tcp://127.0.0.1:{port}"
         if num_machines > 1 and dist_url.startswith("file://"):
-            logger.warning(
+            print(
                 "file:// is not a reliable init_method in multi-machine jobs. Prefer tcp://"
             )
 
@@ -322,23 +323,26 @@ def _distributed_worker(
             backend="NCCL", init_method=dist_url, world_size=world_size, rank=global_rank
         )
     except Exception as e:
-        logger.error("Process group URL: {}".format(dist_url))
+        print("Process group URL: {}".format(dist_url))
         raise e
     # synchronize is needed here to prevent a possible timeout after calling init_process_group
     # See: https://github.com/facebookresearch/maskrcnn-benchmark/issues/172
     synchronize()
 
-    assert num_gpus_per_machine <= torch.cuda.device_count()
-    torch.cuda.set_device(local_rank)
+    # assert num_gpus_per_machine <= torch.cuda.device_count()
+    try:
+        torch.cuda.set_device(local_rank)
+    except RuntimeError:
+        pass
 
     # Setup the local process group (which contains ranks within the same machine)
+    global _LOCAL_PROCESS_GROUP
     assert _LOCAL_PROCESS_GROUP is None
     num_machines = world_size // num_gpus_per_machine
     for i in range(num_machines):
         ranks_on_i = list(range(i * num_gpus_per_machine, (i + 1) * num_gpus_per_machine))
         pg = dist.new_group(ranks_on_i)
         if i == machine_rank:
-            global _LOCAL_PROCESS_GROUP
             _LOCAL_PROCESS_GROUP = pg
 
     main_func(*args)
