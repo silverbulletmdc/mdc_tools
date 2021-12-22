@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/mnt/bd/mengdechao/miniconda3/envs/fomm/bin/python
 """
 所有单GPU的应用，使用多进程运行。
 应用必须支持--start-idx和--end-idx参数
@@ -7,6 +7,7 @@ import click
 import torch.multiprocessing as mp
 import subprocess
 import math
+import os
 
 
 @click.command()
@@ -21,8 +22,9 @@ def main(gpus, start_idx, end_idx, command):
     procs = []
     for idx, gpu in enumerate(gpus):
         end = min(start + step, end_idx)
-        command = f"CUDA_VISIBLE_DEVICES={gpu} {command} --start-idx {start} --end-idx {end}"
-        proc = subprocess.Popen(command, shell=True)
+        new_command = f"export CUDA_VISIBLE_DEVICES={gpu}; {command} --start-idx {start} --end-idx {end}"
+        print(new_command)
+        proc = subprocess.Popen(new_command, shell=True)
         procs.append(proc)
         start = end
     for proc in procs:
