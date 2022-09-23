@@ -7,6 +7,7 @@ class Timer():
 
     def __enter__(self):
         self.start = time.time()
+        print(f"Starting {self.message}")
 
     def __exit__(self, type, value, traceback):
         elapsed_time = (time.time() - self.start)
