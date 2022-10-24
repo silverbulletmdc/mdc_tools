@@ -44,6 +44,7 @@ def main(command, session_name, period):
             handler.restart_client()
         except KeyboardInterrupt:
             handler.kill_client()
+            handler.kill_session()
             break
 
 
