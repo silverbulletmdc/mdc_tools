@@ -1,0 +1,51 @@
+#! /usr/bin/env python
+
+import click
+import time
+import libtmux
+import re
+
+
+class ProcessHandler():
+    def __init__(self, command, session_name):
+        server = libtmux.Server()
+        self.command = command
+        self.session = server.new_session(session_name)
+        self.cmd_pane = self.session.attached_window.panes[0]
+
+    def open_client(self):
+        self.cmd_pane.send_keys(self.command)
+
+    def kill_client(self):
+        self.cmd_pane.send_keys('C-c', enter=False, suppress_history=False)
+        time.sleep(3)
+        print('Killed.')
+
+    def restart_client(self):
+        self.kill_client()
+        self.open_client()
+
+    def kill_session(self):
+        self.session.kill_session()
+
+
+@click.command(help="定时重启指令。指令会在tmux的session中执行。间隔时间为小时")
+@click.option('-c', '--command')
+@click.option('-s', '--session-name')
+@click.option('-p', '--period', default=24)
+def main(command, session_name, period):
+    handler = ProcessHandler(command, session_name)
+    handler.open_client()
+    while True:
+        try:
+            # 每20小时重启一次
+            time.sleep(int(period * 60 * 60))
+            print("Restarting...")
+            handler.restart_client()
+        except KeyboardInterrupt:
+            handler.kill_client()
+            break
+
+
+if __name__ == '__main__':
+    main()
