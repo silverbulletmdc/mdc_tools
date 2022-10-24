@@ -50,12 +50,3 @@ Output:
 ```
 operation name consumes 0.024 seconds.
 ```
-
-## TODO
-
-[] Support run file in different directories. 
-
-## Update Log
-### 2021.07.08
-1. Auto install dependencies for vpdb.
-2. Handle the environment variables.
