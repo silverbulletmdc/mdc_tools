@@ -5,7 +5,7 @@ which covers the visualization, profiling, debug, and data preprocessing.
 ## Install
 
 ```shell script
-pip install mdc_tools
+pip install git+https://github.com/silverbulletmdc/mdc_tools
 ```
 
 ## Command Line Tools
