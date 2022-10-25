@@ -24,7 +24,7 @@ class PostProcess():
     def __call__(self, outputs):
         for r in self.ret:
             pass
-        self.ret = self.pool.imap_unordered(self.pose_func, outputs)
+        self.ret = self.pool.imap_unordered(self.post_func, outputs)
     
     def join(self):
         for r in self.ret:
