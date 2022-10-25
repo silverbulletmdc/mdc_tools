@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
-import numpy as np
 from matplotlib.patches import Rectangle
+import numpy as np
 import cv2
 
 COLOR_LIST = [
