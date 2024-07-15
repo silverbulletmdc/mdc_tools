@@ -10,7 +10,7 @@ setup(
     # keywords=("pytorch", "vehicle", "ReID"),
     description="Personal tools",
     scripts=glob.glob('scripts/*'),
-    install_requires=["jstyleson"],
+    install_requires=["jstyleson", "click", "tqdm"],
     # long_description="",
     packages=find_packages(exclude=('examples', 'examples.*')),
 )

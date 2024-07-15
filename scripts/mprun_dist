@@ -1,0 +1,37 @@
+#!/mnt/bd/mengdechao/miniconda3/envs/fomm/bin/python
+"""
+分布式多进程运行
+
+自动读取WORLD_SIZE等参数，通过start_idx和end_idx计算出每个节点需要执行的任务段。
+应用必须支持--start-idx和--end-idx参数
+"""
+import click
+import subprocess
+import math
+import os
+
+
+@click.command()
+@click.option('--start-idx', default=0)
+@click.option('--end-idx', default=100)
+@click.option('--command', default='')
+def main(start_idx, end_idx, command):
+    world_size = os.environ.get("WORLD_SIZE", 1)
+    rank = os.environ.get("RANK", 0)
+    world_size = int(world_size)
+    rank = int(rank)
+
+    step = math.ceil((end_idx - start_idx) / world_size)
+    start = min(rank * step + start_idx, end_idx)
+    end = min((rank+1) * step + start_idx, end_idx)
+    print(start, end)
+    new_command = f"{command} --start-idx {start} --end-idx {end}"
+
+    print(new_command)
+    proc = subprocess.Popen(new_command, shell=True)
+    code = proc.wait()
+    return code
+
+
+if __name__ == '__main__':
+    main()

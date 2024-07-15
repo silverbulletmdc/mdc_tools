@@ -76,5 +76,28 @@ def detect_reid_pkl(input_path):
             pprint(value[0])
     print("Total: ", sum)
 
+@main.command()
+@click.argument('input-path')
+@click.argument('output-path')
+def folder2lmdb(input_path, output_path):
+    import lmdb
+    env = lmdb.open(output_path, map_size=1099511627776)
+    txn = env.begin(write=True)
+    txn.put(key=b'1', value=b'aaa')
+    txn.put(key=b'2', value=b'bbb')
+    txn.commit()
+    env.close()
+
+
+@main.command()
+@click.argument('lmdb-path')
+def ls_lmdb(lmdb_path):
+    import lmdb
+    with lmdb.open(lmdb_path) as env:
+        txn = env.begin()
+        for key, value in txn.cursor(): #遍历 
+            print (key, value) 
+        txn.commit()
+
 if __name__ == '__main__':
     main()
